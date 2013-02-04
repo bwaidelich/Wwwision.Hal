@@ -1,3 +1,0 @@
-[submodule "Resources/Public/Libraries/hal_browser"]
-	path = Resources/Public/Libraries/hal_browser
-	url = git://github.com/mikekelly/hal-browser.git
