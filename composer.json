@@ -1,0 +1,14 @@
+{
+    "name": "wwwision/hal",
+    "type": "typo3-flow-package",
+    "description": "TYPO3 Flow package with helpers for the Hypertext Application Language (http://stateless.co/hal_specification.html)",
+    "require": {
+        "typo3/flow": "*",
+        "zircote/Hal": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Wwwision\\Hal": "Classes"
+        }
+    }
+}
