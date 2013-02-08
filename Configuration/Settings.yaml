@@ -1,0 +1,7 @@
+TYPO3:
+  Flow:
+    object:
+      excludeClasses:
+       'zircote.Hal' : ['.*']
+    reflection:
+      ignoredTags: ['api', 'package', 'subpackage', 'license', 'copyright', 'author', 'const', 'see', 'todo', 'scope', 'fixme', 'test', 'expectedException', 'depends', 'dataProvider', 'group', 'codeCoverageIgnore', 'rel']

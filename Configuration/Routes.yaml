@@ -1,0 +1,8 @@
+-
+  name: 'API Browser'
+  uriPattern: 'api/browser'
+  defaults:
+    '@package':    'Wwwision.Hal'
+    '@controller': 'Browser'
+    '@action':     'index'
+    '@format':     'html'
