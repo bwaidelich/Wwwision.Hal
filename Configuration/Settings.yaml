@@ -4,4 +4,10 @@ TYPO3:
       excludeClasses:
        'zircote.Hal' : ['.*']
     reflection:
-      ignoredTags: ['api', 'package', 'subpackage', 'license', 'copyright', 'author', 'const', 'see', 'todo', 'scope', 'fixme', 'test', 'expectedException', 'depends', 'dataProvider', 'group', 'codeCoverageIgnore', 'rel']
+      ignoredTags: ['api', 'package', 'subpackage', 'license', 'copyright', 'author', 'const', 'see', 'todo', 'scope', 'fixme', 'test', 'expectedException', 'depends', 'dataProvider', 'group', 'codeCoverageIgnore', 'rel', 'covers']
+
+Wwwision:
+  Hal:
+    browser:
+      defaultRequestHeaders:
+        #'Some-Header': 'Some Value'

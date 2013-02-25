@@ -40,8 +40,8 @@
 					<h2>Request Headers</h2>
 
 					<div id="headers-bar">
-						<!--X-Api-Token: 940fb4d983a4a8458176f7ff1349dad3f7727a4f-->
-						<textarea id="request-headers">X-Api-Token: 940fb4d983a4a8458176f7ff1349dad3f7727a4</textarea>
+						<textarea id="request-headers"><f:for each="{settings.browser.defaultRequestHeaders}" as="headerValue" key="headerName">{headerName}: {headerValue}
+</f:for></textarea>
 					</div>
 				</div>
 				<div class="row-fluid" id="current-resource"></div>
