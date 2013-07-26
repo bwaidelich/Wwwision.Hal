@@ -18,9 +18,14 @@ use TYPO3\Flow\Annotations as Flow;
 class BrowserController extends \TYPO3\Flow\Mvc\Controller\ActionController {
 
 	/**
+	 * @param string $token
 	 * @return void
 	 */
-	public function indexAction() {
+	public function indexAction($token) {
+		$requestHeaders = isset($this->settings['browser']['defaultRequestHeaders']) ? $this->settings['browser']['defaultRequestHeaders'] : array();
+		$requestHeaders['X-Api-Token'] = $token;
+
+		$this->view->assign('requestHeaders', $requestHeaders);
 	}
 
 }
