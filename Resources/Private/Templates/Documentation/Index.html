@@ -1,0 +1,8 @@
+<h1>Welcome to the &quot;{apiName}&quot; API</h1>
+<ul>
+	<f:for each="{resourceDefinitions}" as="resourceDefinition" key="resourceName">
+		<li>
+			<f:link.action action="show" arguments="{apiName: apiName, resourceName: resourceName}">{resourceName}</f:link.action>
+		</li>
+	</f:for>
+</ul>

@@ -6,3 +6,16 @@
     '@controller': 'Browser'
     '@action':     'index'
     '@format':     'html'
+#    'apiName':     'default'
+#  appendExceedingArguments: TRUE
+
+-
+  name: 'API Documentation for a single resource'
+  uriPattern: 'api/rels'
+  defaults:
+    '@package':    'Wwwision.Hal'
+    '@controller': 'Documentation'
+    '@action':     'show'
+    '@format':     'html'
+    'apiName':     'default'
+  appendExceedingArguments: TRUE

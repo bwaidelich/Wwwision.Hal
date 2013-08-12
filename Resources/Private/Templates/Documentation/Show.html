@@ -1,0 +1,41 @@
+<h1>Welcome to the &quot;{apiName}&quot; API</h1>
+<h2>Definition of resource &quot;{resourceDefinition.name}&quot;:</h2>
+<p>{resourceDefinition.description}</p>
+<f:if condition="{resourceDefinition.alias}">
+	<p>This is an alias for <f:link.action action="show" arguments="{resourceName: resourceDefinition.aliasFor.name, apiName: apiName}">{resourceDefinition.aliasFor.name}</f:link.action>.</p>
+</f:if>
+<f:if condition="{resourceDefinition.collection}">
+	<p>This is an collection of <f:link.action action="show" arguments="{resourceName: resourceDefinition.collectionOf.name, apiName: apiName}">{resourceDefinition.collectionOf.name}</f:link.action> resources.</p>
+</f:if>
+
+<f:if condition="{resourceDefinition.propertyDefinitions}">
+	<h3>Properties</h3>
+	<ul>
+		<f:for each="{resourceDefinition.propertyDefinitions}" as="propertyDefinition">
+			<li>
+				{propertyDefinition.name} ({propertyDefinition.type})
+				<f:if condition="{propertyDefinition.description}">
+					<ul>
+						<li>{propertyDefinition.description}</li>
+					</ul>
+				</f:if>
+			</li>
+		</f:for>
+	</ul>
+</f:if>
+
+<f:if condition="{resourceDefinition.embeddedResourceDefinitions}">
+	<h3>Embedded resources</h3>
+	<ul>
+		<f:for each="{resourceDefinition.embeddedResourceDefinitions}" as="embeddedResourceDefinition">
+			<li>
+				{embeddedResourceDefinition.name} ({embeddedResourceDefinition.type})
+				<f:if condition="{embeddedResourceDefinition.description}">
+					<ul>
+						<li>{embeddedResourceDefinition.description}</li>
+					</ul>
+				</f:if>
+			</li>
+		</f:for>
+	</ul>
+</f:if>
