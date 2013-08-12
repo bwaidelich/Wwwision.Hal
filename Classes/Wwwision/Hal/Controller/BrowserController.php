@@ -12,18 +12,22 @@ namespace Wwwision\Hal\Controller;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Mvc\Controller\ActionController;
 
 /**
+ * Displays the HAL Browser
  */
-class BrowserController extends \TYPO3\Flow\Mvc\Controller\ActionController {
+class BrowserController extends ActionController {
 
 	/**
 	 * @param string $token
 	 * @return void
 	 */
-	public function indexAction($token) {
+	public function indexAction($token = NULL) {
 		$requestHeaders = isset($this->settings['browser']['defaultRequestHeaders']) ? $this->settings['browser']['defaultRequestHeaders'] : array();
-		$requestHeaders['X-Api-Token'] = $token;
+		if ($token !== NULL) {
+			$requestHeaders['X-Api-Token'] = $token;
+		}
 
 		$this->view->assign('requestHeaders', $requestHeaders);
 	}
