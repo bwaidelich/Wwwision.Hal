@@ -41,6 +41,11 @@ class ResourceDefinitionFactory {
 	protected $settings;
 
 	/**
+	 * @var array
+	 */
+	protected $generatedResourceDefinitions = array();
+
+	/**
 	 * @param array $settings
 	 * @return void
 	 */
@@ -91,12 +96,16 @@ class ResourceDefinitionFactory {
 	 * @throws \Exception
 	 */
 	public function createFromResourceName($resourceName) {
+		if (isset($this->generatedResourceDefinitions[$resourceName])) {
+			return $this->generatedResourceDefinitions[$resourceName];
+		}
 		if (!isset($this->apiConfiguration['resources'][$resourceName])) {
 			throw new \Exception(sprintf('Resource "%s" is not defined for API "%s"', $resourceName, $this->getApiName()), 1374759094);
 		}
 		$commonConfiguration = isset($this->apiConfiguration['commonConfiguration']) ? $this->apiConfiguration['commonConfiguration'] : array();
 		$resourceConfiguration = Arrays::arrayMergeRecursiveOverrule($commonConfiguration, $this->apiConfiguration['resources'][$resourceName]);
 		$resourceDefinition = new ResourceDefinition($resourceName, $resourceConfiguration);
+		$this->generatedResourceDefinitions[$resourceName] = $resourceDefinition;
 
 		// links
 		if (isset($resourceConfiguration['links'])) {
