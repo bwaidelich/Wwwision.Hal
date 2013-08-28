@@ -101,6 +101,9 @@ class ResourceDefinition {
 	 * @return ResourceDefinition
 	 */
 	public function getCollectionOf() {
+		if ($this->isAlias()) {
+			return $this->aliasFor->getCollectionOf();
+		}
 		return $this->collectionOf;
 	}
 
@@ -108,6 +111,9 @@ class ResourceDefinition {
 	 * @return boolean
 	 */
 	public function isCollection() {
+		if ($this->isAlias()) {
+			return $this->aliasFor->isCollection();
+		}
 		return $this->collectionOf !== NULL;
 	}
 
@@ -136,7 +142,7 @@ class ResourceDefinition {
 	 * @return string
 	 */
 	public function getLinkName() {
-		$name = $this->name;
+		$name = $this->getName();
 		if (isset($this->options['linkNamespace'])) {
 			$name = $this->options['linkNamespace'] . ':' . $name;
 		}

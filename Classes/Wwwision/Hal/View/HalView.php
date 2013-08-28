@@ -100,14 +100,19 @@ class HalView extends AbstractView {
 		if ($resourceDefinition->isCollection()) {
 			foreach ($resource as $embeddedResource) {
 				$embeddedResourceDefinition = $resourceDefinition->getCollectionOf();
-				$embeddedResourceDefinition->getOptions();
 				$halResource->setEmbedded($resourceDefinition->getLinkName(), $this->createCollectionResource($resourceDefinition, $embeddedResource));
 			}
 		} else {
+			/** @var $embeddedResourceDefinition ResourceDefinition */
 			foreach ($resourceDefinition->getEmbeddedResourceDefinitions() as $embeddedResourceDefinition) {
-				$embeddedResources = ObjectAccess::getProperty($resource, $embeddedResourceDefinition->getName());
-				foreach ($embeddedResources as $embeddedResource) {
-					$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createCollectionResource($embeddedResourceDefinition, $embeddedResource));
+				if ($embeddedResourceDefinition->isCollection()) {
+					$embeddedResources = ObjectAccess::getProperty($resource, $embeddedResourceDefinition->getName());
+					foreach ($embeddedResources as $embeddedResource) {
+						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createCollectionResource($embeddedResourceDefinition, $embeddedResource));
+					}
+				} else {
+					$embeddedResource = ObjectAccess::getProperty($resource, $embeddedResourceDefinition->getName());
+					$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createEmbeddedResource($embeddedResourceDefinition, $embeddedResource));
 				}
 			}
 		}
@@ -134,9 +139,18 @@ class HalView extends AbstractView {
 	 * @return Resource
 	 */
 	protected function createCollectionResource(ResourceDefinition $resourceDefinition, $resource) {
-		$resourceOptions = $resourceDefinition->getOptions();
 		$collectionResourceDefinition = $resourceDefinition->getCollectionOf();
-		$halResource = new Resource($this->getResourceUri($collectionResourceDefinition, $resource));
+		return $this->createEmbeddedResource($collectionResourceDefinition, $resource);
+	}
+
+	/**
+	 * @param ResourceDefinition $resourceDefinition
+	 * @param $resource
+	 * @return Resource
+	 */
+	protected function createEmbeddedResource(ResourceDefinition $resourceDefinition, $resource) {
+		$resourceOptions = $resourceDefinition->getOptions();
+		$halResource = new Resource($this->getResourceUri($resourceDefinition, $resource));
 
 		$data = array();
 		$data['id'] = $this->persistenceManager->getIdentifierByObject($resource);
@@ -144,7 +158,7 @@ class HalView extends AbstractView {
 		$includeProperties = isset($resourceOptions['includeProperties']) ? $resourceOptions['includeProperties'] : array();
 
 		/** @var $propertyDefinition ResourcePropertyDefinition */
-		foreach ($collectionResourceDefinition->getPropertyDefinitions() as $propertyDefinition) {
+		foreach ($resourceDefinition->getPropertyDefinitions() as $propertyDefinition) {
 			if (!in_array($propertyDefinition->getName(), $includeProperties)) {
 				continue;
 			}
@@ -173,7 +187,8 @@ class HalView extends AbstractView {
 
 		// FIXME is_array
 		if (!$resourceDefinition->isCollection() && !is_array($resource)) {
-			$routeValues[$resourceDefinition->getName()] = $resource;
+			$resourceName = $resourceDefinition->isAlias() ? $resourceDefinition->getAliasFor()->getName() : $resourceDefinition->getName();
+			$routeValues[$resourceName] = $resource;
 		}
 
 		return $this->buildUriFromRouteValues($routeValues);
