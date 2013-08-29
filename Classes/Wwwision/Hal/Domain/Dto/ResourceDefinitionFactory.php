@@ -163,10 +163,6 @@ class ResourceDefinitionFactory {
 		// properties
 		$propertyNames = $this->getResourcePropertyNames($resourceConfiguration);
 		foreach ($propertyNames as $propertyName) {
-			if (isset($resourceConfiguration['className']) && !$classSchema->hasProperty($propertyName)) {
-				// TODO getter without corresponding property. log/exception?
-				continue;
-			}
 			$propertyDefinition = new ResourcePropertyDefinition($propertyName);
 			$propertyConfiguration = isset($resourceConfiguration['properties'][$propertyName]) ? $resourceConfiguration['properties'][$propertyName] : array();
 
@@ -185,7 +181,7 @@ class ResourceDefinitionFactory {
 			}
 
 			// add property/embedded resource
-			if (!isset($resourceConfiguration['className'])) {
+			if (!isset($resourceConfiguration['className']) || !$classSchema->hasProperty($propertyName)) {
 				$resourceDefinition->addPropertyDefinition($propertyDefinition);
 			} else {
 				$propertyMetadata = $classSchema->getProperty($propertyName);
