@@ -64,17 +64,21 @@ class HalView extends AbstractView {
 	 * @return mixed
 	 */
 	protected function getResource() {
-		unset($this->variables['settings']);
-		$resource = current($this->variables);
-		return $resource !== FALSE ? $resource : NULL;
+		$resourceName = $this->getResourceName();
+		return isset($this->variables[$resourceName]) ? $this->variables[$resourceName] : NULL;
 	}
 
 	/**
 	 * @return string
 	 */
 	protected function getResourceName() {
-		unset($this->variables['settings']);
-		return key($this->variables);
+		$variables = $this->variables;
+		foreach ($variables as $variableName => $variableValue) {
+			if ($variableName === 'settings' || substr($variableName, 0, 1) === '_') {
+				continue;
+			}
+			return $variableName;
+		}
 	}
 
 	/**
