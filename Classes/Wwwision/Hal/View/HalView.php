@@ -211,6 +211,8 @@ class HalView extends AbstractView {
 		$packageKey = $this->extractRouteValue($routeValues, '@package');
 		$subPackageKey = $this->extractRouteValue($routeValues, '@subpackage');
 
+		$routeValues = array_map(array($this, 'replacePlaceholders'), $routeValues);
+
 		$uri = '';
 		if (!$absolute) {
 			// FIXME this is currently needed for the HAL browser..
@@ -220,6 +222,22 @@ class HalView extends AbstractView {
 			->reset()
 			->setCreateAbsoluteUri($absolute)->uriFor($actionName, $routeValues, $controllerName, $packageKey, $subPackageKey);
 		return $uri;
+	}
+
+	/**
+	 * replaces "{placeholder}" by $this->variables['placeholder'] in the given $string
+	 *
+	 * @param string $string
+	 * @return mixed
+	 */
+	protected function replacePlaceholders($string) {
+		if (is_string($string) && strpos($string, '{') === 0) {
+			$variableName = substr($string, 1, -1);
+			if (isset($this->variables[$variableName])) {
+				return $this->variables[$variableName];
+			}
+		}
+		return $string;
 	}
 
 	/**
