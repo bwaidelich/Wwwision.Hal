@@ -21,15 +21,17 @@ class BrowserController extends ActionController {
 
 	/**
 	 * @param string $token
+	 * @param string $apiRoot
 	 * @return void
 	 */
-	public function indexAction($token = NULL) {
+	public function indexAction($token = NULL, $apiRoot = NULL) {
 		$requestHeaders = isset($this->settings['browser']['defaultRequestHeaders']) ? $this->settings['browser']['defaultRequestHeaders'] : array();
 		if ($token !== NULL) {
 			$requestHeaders['X-Api-Token'] = $token;
 		}
 
 		$this->view->assign('requestHeaders', $requestHeaders);
+		$this->view->assign('apiRoot', $apiRoot);
 	}
 
 }

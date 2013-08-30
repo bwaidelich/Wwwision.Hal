@@ -19,7 +19,7 @@
 
 			<div class="nav-collapse">
 				<ul class="nav">
-					<li><a href="#/api">Go To Root URI</a></li>
+					<li><a href="#/{apiRoot}">Go To Root URI</a></li>
 					<li><a href="https://github.com/mikekelly/hal-browser">About The HAL Browser</a></li>
 				</ul>
 			</div>
@@ -279,7 +279,7 @@
 
 <script src="../../../Public/Libraries/hal-browser/hal_browser.js"></script>
 <script>
-	router = new HAL.Router(<![CDATA[{]]> entryPoint:'/api' });
+	router = new HAL.Router(<![CDATA[{]]> entryPoint:'/{apiRoot}' });
 	Backbone.history.start();
 </script>
 </body>
