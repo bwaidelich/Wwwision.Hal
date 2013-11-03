@@ -80,6 +80,7 @@ class HalView extends AbstractView {
 			}
 			return $variableName;
 		}
+		return '';
 	}
 
 	/**
@@ -105,7 +106,6 @@ class HalView extends AbstractView {
 
 		if ($resourceDefinition->isCollection()) {
 			foreach ($resource as $embeddedResource) {
-				$embeddedResourceDefinition = $resourceDefinition->getCollectionOf();
 				$halResource->setEmbedded($resourceDefinition->getLinkName(), $this->createCollectionResource($resourceDefinition, $embeddedResource));
 			}
 		} else {
@@ -153,7 +153,7 @@ class HalView extends AbstractView {
 
 	/**
 	 * @param ResourceDefinition $resourceDefinition
-	 * @param $resource
+	 * @param object $resource
 	 * @return Resource
 	 */
 	protected function createEmbeddedResource(ResourceDefinition $resourceDefinition, $resource) {

@@ -154,7 +154,7 @@ class ResourceDefinitionFactory {
 		// description
 		if (isset($resourceConfiguration['description'])) {
 			$resourceDefinition->setDescription($resourceConfiguration['description']);
-		} elseif (isset($resourceConfiguration['className'])) {
+		} elseif (isset($classReflection)) {
 			$resourceDefinition->setDescription($classReflection->getDescription());
 		}
 
@@ -167,7 +167,7 @@ class ResourceDefinitionFactory {
 			// description
 			if (isset($propertyConfiguration['description'])) {
 				$propertyDefinition->setDescription($propertyConfiguration['description']);
-			} elseif (isset($resourceConfiguration['className'])) {
+			} elseif (isset($classReflection)) {
 				if ($classReflection->hasProperty($propertyName)) {
 					$propertyDefinition->setDescription($classReflection->getProperty($propertyName)->getDescription());
 				}
@@ -179,7 +179,7 @@ class ResourceDefinitionFactory {
 			}
 
 			// add property/embedded resource
-			if (!isset($resourceConfiguration['className']) || !$classSchema->hasProperty($propertyName)) {
+			if (!isset($classSchema) || !$classSchema->hasProperty($propertyName)) {
 				$resourceDefinition->addPropertyDefinition($propertyDefinition);
 			} else {
 				$propertyMetadata = $classSchema->getProperty($propertyName);
