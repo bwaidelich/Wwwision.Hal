@@ -97,9 +97,9 @@ class HalView extends AbstractView {
 		/** @var $propertyDefinition ResourcePropertyDefinition */
 		foreach ($resourceDefinition->getPropertyDefinitions() as $propertyDefinition) {
 			if ($propertyDefinition->hasStaticValue()) {
-				$data[$propertyDefinition->getName()] = $propertyDefinition->getStaticValue();
+				$data[$propertyDefinition->getResourceName()] = $propertyDefinition->getStaticValue();
 			} else {
-				$data[$propertyDefinition->getName()] = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
+				$data[$propertyDefinition->getResourceName()] = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
 			}
 		}
 		$halResource->setData($data);
@@ -110,16 +110,16 @@ class HalView extends AbstractView {
 			}
 		} else {
 			/** @var $embeddedResourceDefinition ResourceDefinition */
-			foreach ($resourceDefinition->getEmbeddedResourceDefinitions() as $embeddedResourceDefinition) {
+			foreach ($resourceDefinition->getEmbeddedResourceDefinitions() as $propertyName => $embeddedResourceDefinition) {
 				if ($embeddedResourceDefinition->isCollection()) {
-					$embeddedResources = ObjectAccess::getProperty($resource, $embeddedResourceDefinition->getName());
+					$embeddedResources = ObjectAccess::getProperty($resource, $propertyName);
 					foreach ($embeddedResources as $embeddedResource) {
 						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createCollectionResource($embeddedResourceDefinition, $embeddedResource));
 					}
 				} else {
-					$embeddedResource = ObjectAccess::getProperty($resource, $embeddedResourceDefinition->getName());
+					$embeddedResource = ObjectAccess::getProperty($resource, $propertyName);
 					if ($embeddedResource !== NULL) {
-						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createEmbeddedResource($embeddedResourceDefinition, $embeddedResource));
+						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createEmbeddedResource($embeddedResourceDefinition, $embeddedResource, $embeddedResourceDefinition->getOptions()));
 					}
 				}
 			}
@@ -152,22 +152,22 @@ class HalView extends AbstractView {
 	 */
 	protected function createCollectionResource(ResourceDefinition $resourceDefinition, $resource) {
 		$collectionResourceDefinition = $resourceDefinition->getCollectionOf();
-		return $this->createEmbeddedResource($collectionResourceDefinition, $resource);
+		return $this->createEmbeddedResource($collectionResourceDefinition, $resource, $resourceDefinition->getOptions());
 	}
 
 	/**
 	 * @param ResourceDefinition $resourceDefinition
 	 * @param object $resource
+	 * @param array $options
 	 * @return Resource
 	 */
-	protected function createEmbeddedResource(ResourceDefinition $resourceDefinition, $resource) {
-		$resourceOptions = $resourceDefinition->getOptions();
+	protected function createEmbeddedResource(ResourceDefinition $resourceDefinition, $resource, array $options) {
 		$halResource = new Resource($this->getResourceUri($resourceDefinition, $resource));
 
 		$data = array();
 		$data['id'] = $this->persistenceManager->getIdentifierByObject($resource);
 
-		$includeProperties = isset($resourceOptions['includeProperties']) ? $resourceOptions['includeProperties'] : array();
+		$includeProperties = isset($options['includeProperties']) ? $options['includeProperties'] : array();
 
 		/** @var $propertyDefinition ResourcePropertyDefinition */
 		foreach ($resourceDefinition->getPropertyDefinitions() as $propertyDefinition) {
@@ -175,9 +175,9 @@ class HalView extends AbstractView {
 				continue;
 			}
 			if ($propertyDefinition->hasStaticValue()) {
-				$data[$propertyDefinition->getName()] = $propertyDefinition->getStaticValue();
+				$data[$propertyDefinition->getResourceName()] = $propertyDefinition->getStaticValue();
 			} else {
-				$data[$propertyDefinition->getName()] = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
+				$data[$propertyDefinition->getResourceName()] = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
 			}
 		}
 		$halResource->setData($data);

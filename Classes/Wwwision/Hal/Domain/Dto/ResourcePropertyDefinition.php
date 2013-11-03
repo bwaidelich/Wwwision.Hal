@@ -23,6 +23,13 @@ class ResourcePropertyDefinition {
 	protected $name;
 
 	/**
+	 * Only used if the name of this property is different than the resource it contains
+	 *
+	 * @var string
+	 */
+	protected $resourceName = NULL;
+
+	/**
 	 * @var string
 	 */
 	protected $description;
@@ -49,6 +56,21 @@ class ResourcePropertyDefinition {
 	 */
 	public function getName() {
 		return $this->name;
+	}
+
+	/**
+	 * @param string $resourceName
+	 * @return void
+	 */
+	public function setResourceName($resourceName) {
+		$this->resourceName = $resourceName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getResourceName() {
+		return $this->resourceName !== NULL ? $this->resourceName : $this->name;
 	}
 
 	/**

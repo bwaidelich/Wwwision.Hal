@@ -163,6 +163,9 @@ class ResourceDefinitionFactory {
 		foreach ($propertyNames as $propertyName) {
 			$propertyDefinition = new ResourcePropertyDefinition($propertyName);
 			$propertyConfiguration = isset($resourceConfiguration['properties'][$propertyName]) ? $resourceConfiguration['properties'][$propertyName] : array();
+			if (isset($propertyConfiguration['resourceName'])) {
+				$propertyDefinition->setResourceName($propertyConfiguration['resourceName']);
+			}
 
 			// description
 			if (isset($propertyConfiguration['description'])) {
@@ -187,7 +190,7 @@ class ResourceDefinitionFactory {
 				if ($propertyMetadata['type'] === 'DateTime' || TypeHandling::isSimpleType($propertyMetadata['type'])) {
 					$resourceDefinition->addPropertyDefinition($propertyDefinition);
 				} else {
-					$resourceDefinition->addEmbeddedResourceDefinition($this->createFromResourceName($propertyDefinition->getName()));
+					$resourceDefinition->addEmbeddedResourceDefinition($this->createFromResourceName($propertyDefinition->getResourceName()), $propertyDefinition->getName());
 				}
 			}
 		}

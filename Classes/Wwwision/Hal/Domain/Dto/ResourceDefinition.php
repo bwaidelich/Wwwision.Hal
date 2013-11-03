@@ -209,10 +209,14 @@ class ResourceDefinition {
 
 	/**
 	 * @param ResourceDefinition $embeddedResourceDefinition
+	 * @param string $propertyName optional property name, if NULL the property name is expected to be the same as the name of given $embeddedResourceDefinition
 	 * @return void
 	 */
-	public function addEmbeddedResourceDefinition(ResourceDefinition $embeddedResourceDefinition) {
-		$this->embeddedResourceDefinitions[$embeddedResourceDefinition->getName()] = $embeddedResourceDefinition;
+	public function addEmbeddedResourceDefinition(ResourceDefinition $embeddedResourceDefinition, $propertyName = NULL) {
+		if ($propertyName === NULL) {
+			$propertyName = $embeddedResourceDefinition->getName();
+		}
+		$this->embeddedResourceDefinitions[$propertyName] = $embeddedResourceDefinition;
 	}
 
 	/**
