@@ -12,12 +12,10 @@ namespace Wwwision\Hal\Domain\Dto;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Http\Request;
-use TYPO3\Flow\Mvc\ActionRequest;
-use TYPO3\Flow\Mvc\Routing\UriBuilder;
 use TYPO3\Flow\Reflection\ClassReflection;
 use TYPO3\Flow\Utility\Arrays;
 use TYPO3\Flow\Utility\TypeHandling;
+use Wwwision\Hal\Exception;
 
 /**
  * @Flow\Scope("singleton")
@@ -55,11 +53,11 @@ class ResourceDefinitionFactory {
 
 	/**
 	 * @return void
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function initializeObject() {
 		if (!isset($this->settings['apis'][$this->getApiName()])) {
-			throw new \Exception(sprintf('The API "%s" is not defined', $this->getApiName()), 1374763522);
+			throw new Exception(sprintf('The API "%s" is not defined', $this->getApiName()), 1374763522);
 		}
 		$this->apiConfiguration = $this->settings['apis'][$this->getApiName()];
 	}
@@ -75,11 +73,11 @@ class ResourceDefinitionFactory {
 	/**
 	 * @param string $className
 	 * @return ResourceDefinition
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function createFromClassName($className) {
 		if (!isset($this->apiConfiguration['resources'])) {
-			throw new \Exception(sprintf('No resources defined for API "%s"', $this->getApiName()), 1374760304);
+			throw new Exception(sprintf('No resources defined for API "%s"', $this->getApiName()), 1374760304);
 		}
 		foreach ($this->apiConfiguration['resources'] as $resourceName => $resourceConfiguration) {
 			if (!isset($resourceConfiguration['className']) || $resourceConfiguration['className'] !== $className) {
@@ -87,20 +85,20 @@ class ResourceDefinitionFactory {
 			}
 			return $this->createFromResourceName($resourceName);
 		}
-		throw new \Exception(sprintf('No resources defined for class name "%s" for API "%s"', $className, $this->getApiName()), 1374760307);
+		throw new Exception(sprintf('No resources defined for class name "%s" for API "%s"', $className, $this->getApiName()), 1374760307);
 	}
 
 	/**
 	 * @param string $resourceName
 	 * @return ResourceDefinition
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function createFromResourceName($resourceName) {
 		if (isset($this->generatedResourceDefinitions[$resourceName])) {
 			return $this->generatedResourceDefinitions[$resourceName];
 		}
 		if (!isset($this->apiConfiguration['resources'][$resourceName])) {
-			throw new \Exception(sprintf('Resource "%s" is not defined for API "%s"', $resourceName, $this->getApiName()), 1374759094);
+			throw new Exception(sprintf('Resource "%s" is not defined for API "%s"', $resourceName, $this->getApiName()), 1374759094);
 		}
 		$commonConfiguration = isset($this->apiConfiguration['commonConfiguration']) ? $this->apiConfiguration['commonConfiguration'] : array();
 		$resourceConfiguration = Arrays::arrayMergeRecursiveOverrule($commonConfiguration, $this->apiConfiguration['resources'][$resourceName]);

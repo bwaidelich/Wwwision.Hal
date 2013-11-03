@@ -20,6 +20,7 @@ use TYPO3\Flow\Reflection\ObjectAccess;
 use Wwwision\Hal\Domain\Dto\ResourceDefinition;
 use Wwwision\Hal\Domain\Dto\ResourceLinkDefinition;
 use Wwwision\Hal\Domain\Dto\ResourcePropertyDefinition;
+use Wwwision\Hal\Exception;
 
 /**
  * A HAL view
@@ -83,6 +84,7 @@ class HalView extends AbstractView {
 
 	/**
 	 * @return Resource
+	 * @throws Exception
 	 */
 	protected function buildHalResource() {
 		$resource = $this->getResource();

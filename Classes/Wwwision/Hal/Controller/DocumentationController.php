@@ -13,6 +13,7 @@ namespace Wwwision\Hal\Controller;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Mvc\Controller\ActionController;
+use Wwwision\Hal\Exception;
 
 /**
  */
@@ -27,11 +28,11 @@ class DocumentationController extends ActionController {
 	/**
 	 * @param string $apiName
 	 * @return void
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function indexAction($apiName) {
 		if (!isset($this->settings['apis'][$apiName]['resources'])) {
-			throw new \Exception(sprintf('There are no resources defined for API "%s"', $apiName));
+			throw new Exception(sprintf('There are no resources defined for API "%s"', $apiName));
 		}
 		$this->view->assign('apiName', $apiName);
 		$this->view->assign('resourceDefinitions', $this->settings['apis'][$apiName]['resources']);
