@@ -200,5 +200,11 @@ class ResourceLinkDefinition {
 		return $this->appendQueryString !== NULL && strlen($this->appendQueryString) > 0;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return sprintf('%s (%s)', $this->getName(), $this->getTitle());
+	}
 }
 ?>

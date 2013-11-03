@@ -14,7 +14,7 @@ namespace Wwwision\Hal\View;
 use Hal\Link;
 use Hal\Resource;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Mvc\ActionRequest;
+use TYPO3\Flow\Mvc\Exception\NoMatchingRouteException;
 use TYPO3\Flow\Mvc\View\AbstractView;
 use TYPO3\Flow\Reflection\ObjectAccess;
 use Wwwision\Hal\Domain\Dto\ResourceDefinition;
@@ -128,7 +128,11 @@ class HalView extends AbstractView {
 		/** @var $linkDefinition ResourceLinkDefinition */
 		foreach ($resourceDefinition->getLinkDefinitions() as $linkDefinition) {
 			if ($linkDefinition->hasRouteValues()) {
-				$href = $this->buildUriFromRouteValues($linkDefinition->getRouteValues(), $linkDefinition->isAbsolute());
+				try {
+					$href = $this->buildUriFromRouteValues($linkDefinition->getRouteValues(), $linkDefinition->isAbsolute());
+				} catch (NoMatchingRouteException $exception) {
+					throw new Exception(sprintf('Could not create URI for link definition "%s"', $linkDefinition), 1383496970, $exception);
+				}
 			} else {
 				$href = $this->getResourceUri($linkDefinition->getResourceDefinition(), NULL);
 			}
@@ -185,6 +189,7 @@ class HalView extends AbstractView {
 	 * @param ResourceDefinition $resourceDefinition
 	 * @param $resource
 	 * @return string
+	 * @throws Exception
 	 */
 	protected function getResourceUri(ResourceDefinition $resourceDefinition, $resource) {
 		$resourceConfiguration = $resourceDefinition->getOptions();
@@ -199,7 +204,11 @@ class HalView extends AbstractView {
 			$routeValues[$resourceName] = $resource;
 		}
 
-		return $this->buildUriFromRouteValues($routeValues);
+		try {
+			return $this->buildUriFromRouteValues($routeValues);
+		} catch (NoMatchingRouteException $exception) {
+			throw new Exception(sprintf('Could not create URI for Resource "%s"', $resourceDefinition), 1383496975, $exception);
+		}
 	}
 
 	/**

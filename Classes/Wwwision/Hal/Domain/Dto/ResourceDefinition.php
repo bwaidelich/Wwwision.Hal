@@ -222,5 +222,15 @@ class ResourceDefinition {
 		return $this->embeddedResourceDefinitions;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		$name = $this->getName();
+		if ($this->isAlias()) {
+			$name = sprintf('%s (alias for "%")', $name, $this->getAliasFor());
+		}
+		return $name;
+	}
 }
 ?>
