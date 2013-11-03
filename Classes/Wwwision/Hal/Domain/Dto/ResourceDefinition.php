@@ -122,11 +122,24 @@ class ResourceDefinition {
 	 */
 	public function getOptions() {
 		if ($this->isCollection()) {
-			return Arrays::arrayMergeRecursiveOverrule($this->collectionOf->getOptions(), $this->options);
+			return $this->mergeOptions($this->collectionOf->getOptions());
 		} elseif ($this->isAlias()) {
-			return Arrays::arrayMergeRecursiveOverrule($this->aliasFor->getOptions(), $this->options);
+			return $this->mergeOptions($this->aliasFor->getOptions());
 		}
 		return $this->options;
+	}
+
+	/**
+	 * @param array $baseOptions
+	 * @return array
+	 */
+	protected function mergeOptions(array $baseOptions) {
+		$mergedOptions = Arrays::arrayMergeRecursiveOverrule($baseOptions, $this->options);
+		// the "includeProperties" should not be merged
+		if (isset($this->options['includeProperties'])) {
+			$mergedOptions['includeProperties'] = $this->options['includeProperties'];
+		}
+		return $mergedOptions;
 	}
 
 	/**
