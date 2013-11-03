@@ -244,9 +244,7 @@ class HalView extends AbstractView {
 	protected function replacePlaceholders($string) {
 		if (is_string($string) && strpos($string, '{') === 0) {
 			$variableName = substr($string, 1, -1);
-			if (isset($this->variables[$variableName])) {
-				return $this->variables[$variableName];
-			}
+			return ObjectAccess::getPropertyPath($this->variables, $variableName);
 		}
 		return $string;
 	}
