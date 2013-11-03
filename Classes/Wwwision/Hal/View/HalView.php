@@ -119,7 +119,7 @@ class HalView extends AbstractView {
 				} else {
 					$embeddedResource = ObjectAccess::getProperty($resource, $propertyName);
 					if ($embeddedResource !== NULL) {
-						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createEmbeddedResource($embeddedResourceDefinition, $embeddedResource, $embeddedResourceDefinition->getOptions()));
+						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createEmbeddedResource($embeddedResourceDefinition, $embeddedResource, $embeddedResourceDefinition->getOptions()), TRUE);
 					}
 				}
 			}
