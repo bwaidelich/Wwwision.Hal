@@ -121,10 +121,10 @@ class ResourceDefinition {
 	 * @return array
 	 */
 	public function getOptions() {
-		if ($this->isCollection()) {
-			return $this->mergeOptions($this->collectionOf->getOptions());
-		} elseif ($this->isAlias()) {
+		if ($this->isAlias()) {
 			return $this->mergeOptions($this->aliasFor->getOptions());
+		} elseif ($this->isCollection()) {
+			return $this->mergeOptions($this->collectionOf->getOptions());
 		}
 		return $this->options;
 	}
