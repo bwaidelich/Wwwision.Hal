@@ -224,12 +224,7 @@ class HalView extends AbstractView {
 
 		$routeValues = array_map(array($this, 'replacePlaceholders'), $routeValues);
 
-		$uri = '';
-		if (!$absolute) {
-			// FIXME this is currently needed for the HAL browser..
-			$uri .= '/';
-		}
-		$uri .= $this->controllerContext->getUriBuilder()
+		$uri = $this->controllerContext->getUriBuilder()
 			->reset()
 			->setCreateAbsoluteUri($absolute)->uriFor($actionName, $routeValues, $controllerName, $packageKey, $subPackageKey);
 		return $uri;
