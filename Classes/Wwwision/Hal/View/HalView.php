@@ -16,8 +16,11 @@ use Hal\Resource;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Mvc\Exception\NoMatchingRouteException;
 use TYPO3\Flow\Mvc\View\AbstractView;
+use TYPO3\Flow\Persistence\PersistenceManagerInterface;
+use TYPO3\Flow\Property\PropertyMapper;
 use TYPO3\Flow\Reflection\ObjectAccess;
 use Wwwision\Hal\Domain\Dto\ResourceDefinition;
+use Wwwision\Hal\Domain\Dto\ResourceDefinitionFactory;
 use Wwwision\Hal\Domain\Dto\ResourceLinkDefinition;
 use Wwwision\Hal\Domain\Dto\ResourcePropertyDefinition;
 use Wwwision\Hal\Exception;
@@ -29,13 +32,13 @@ class HalView extends AbstractView {
 
 	/**
 	 * @Flow\Inject
-	 * @var \Wwwision\Hal\Domain\Dto\ResourceDefinitionFactory
+	 * @var ResourceDefinitionFactory
 	 */
 	protected $resourceDefinitionFactory;
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Persistence\PersistenceManagerInterface
+	 * @var PersistenceManagerInterface
 	 */
 	protected $persistenceManager;
 
@@ -177,7 +180,15 @@ class HalView extends AbstractView {
 			if ($propertyDefinition->hasStaticValue()) {
 				$data[$propertyDefinition->getResourceName()] = $propertyDefinition->getStaticValue();
 			} else {
-				$data[$propertyDefinition->getResourceName()] = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
+				$propertyValue = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
+				if ($propertyDefinition->hasType()) {
+					$propertyType = $propertyDefinition->getType();
+					// TODO: support more type conversions
+					if ($propertyType === 'string') {
+						$propertyValue = (string)$propertyValue;
+					}
+				}
+				$data[$propertyDefinition->getResourceName()] = $propertyValue;
 			}
 		}
 		$halResource->setData($data);

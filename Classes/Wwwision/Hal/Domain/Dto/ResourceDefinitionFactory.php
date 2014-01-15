@@ -13,6 +13,7 @@ namespace Wwwision\Hal\Domain\Dto;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Reflection\ClassReflection;
+use TYPO3\Flow\Reflection\ReflectionService;
 use TYPO3\Flow\Utility\Arrays;
 use TYPO3\Flow\Utility\TypeHandling;
 use Wwwision\Hal\Exception;
@@ -24,7 +25,7 @@ class ResourceDefinitionFactory {
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Reflection\ReflectionService
+	 * @var ReflectionService
 	 */
 	protected $reflectionService;
 
@@ -181,13 +182,20 @@ class ResourceDefinitionFactory {
 				$propertyDefinition->setStaticValue($propertyConfiguration['staticValue']);
 			}
 
+			// type casting
+			if (isset($propertyConfiguration['type'])) {
+				$propertyDefinition->setType($propertyConfiguration['type']);
+			}
+
 			// add property/embedded resource
 			if (!isset($classSchema) || !$classSchema->hasProperty($propertyName)) {
 				$resourceDefinition->addPropertyDefinition($propertyDefinition);
 			} else {
 				$propertyMetadata = $classSchema->getProperty($propertyName);
-				$propertyDefinition->setType($propertyMetadata['type']);
-				if ($propertyMetadata['type'] === 'DateTime' || TypeHandling::isSimpleType($propertyMetadata['type'])) {
+				if (!$propertyDefinition->hasType()) {
+					$propertyDefinition->setType($propertyMetadata['type']);
+				}
+				if ($propertyDefinition->getType() === 'DateTime' || TypeHandling::isSimpleType($propertyDefinition->getType())) {
 					$resourceDefinition->addPropertyDefinition($propertyDefinition);
 				} else {
 					$resourceDefinition->addEmbeddedResourceDefinition($this->createFromResourceName($propertyDefinition->getResourceName()), $propertyDefinition->getName());

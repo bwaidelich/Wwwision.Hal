@@ -103,6 +103,13 @@ class ResourcePropertyDefinition {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function hasType() {
+		return $this->type !== NULL;
+	}
+
+	/**
 	 * @param mixed $staticValue
 	 * @return void
 	 */
