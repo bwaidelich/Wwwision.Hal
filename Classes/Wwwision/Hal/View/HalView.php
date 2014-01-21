@@ -140,7 +140,7 @@ class HalView extends AbstractView {
 				$href = $this->getResourceUri($linkDefinition->getResourceDefinition(), NULL);
 			}
 			if ($linkDefinition->hasAppendQueryString()) {
-				$href .= strpos($href, '?') !== FALSE ? '&' . $linkDefinition->getAppendQueryString() : '?' . $linkDefinition->getAppendQueryString();
+				$href .= $linkDefinition->getAppendQueryString();
 			}
 			$halResource->setLink(new Link($href, $linkDefinition->getRel(), $linkDefinition->getTitle(), $linkDefinition->getName(), NULL, $linkDefinition->isTemplated()));
 		}
