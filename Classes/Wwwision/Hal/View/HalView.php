@@ -97,7 +97,12 @@ class HalView extends AbstractView {
 		$halResource = new Resource($this->getResourceUri($resourceDefinition, $resource));
 
 		$data = array();
-		$data['id'] = $this->persistenceManager->getIdentifierByObject($resource);
+		if (is_object($resource)) {
+			$resourceId = $this->persistenceManager->getIdentifierByObject($resource);
+			if ($resourceId !== NULL) {
+				$data['id'] = $resourceId;
+			}
+		}
 		/** @var $propertyDefinition ResourcePropertyDefinition */
 		foreach ($resourceDefinition->getPropertyDefinitions() as $propertyDefinition) {
 			if ($propertyDefinition->hasStaticValue()) {
