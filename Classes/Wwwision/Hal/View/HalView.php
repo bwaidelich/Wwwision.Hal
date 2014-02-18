@@ -14,10 +14,10 @@ namespace Wwwision\Hal\View;
 use Hal\Link;
 use Hal\Resource;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Http\Response;
 use TYPO3\Flow\Mvc\Exception\NoMatchingRouteException;
 use TYPO3\Flow\Mvc\View\AbstractView;
 use TYPO3\Flow\Persistence\PersistenceManagerInterface;
-use TYPO3\Flow\Property\PropertyMapper;
 use TYPO3\Flow\Reflection\ObjectAccess;
 use Wwwision\Hal\Domain\Dto\ResourceDefinition;
 use Wwwision\Hal\Domain\Dto\ResourceDefinitionFactory;
@@ -61,7 +61,21 @@ class HalView extends AbstractView {
 	 * @return string The rendered view
 	 */
 	public function render() {
-		return (string)$this->buildHalResource();
+		$resource = $this->getResource();
+		if ($resource === NULL) {
+			// TODO throw exception / return empty result?
+			return NULL;
+		}
+		$resourceName = $this->getResourceName();
+		$resourceDefinition = $this->resourceDefinitionFactory->createFromResourceName($resourceName);
+		$cacheLifetime = $resourceDefinition->getCacheLifetime();
+		if ($cacheLifetime !== NULL) {
+			$response = $this->controllerContext->getResponse();
+			if ($response instanceof Response) {
+				$response->getHeaders()->setCacheControlDirective('max-age', $cacheLifetime);
+			}
+		}
+		return (string)$this->buildHalResource($resourceDefinition);
 	}
 
 	/**
@@ -87,13 +101,12 @@ class HalView extends AbstractView {
 	}
 
 	/**
+	 * @param ResourceDefinition $resourceDefinition
 	 * @return Resource
 	 * @throws Exception
 	 */
-	protected function buildHalResource() {
+	protected function buildHalResource(ResourceDefinition $resourceDefinition) {
 		$resource = $this->getResource();
-		$resourceName = $this->getResourceName();
-		$resourceDefinition = $this->resourceDefinitionFactory->createFromResourceName($resourceName);
 		$halResource = new Resource($this->getResourceUri($resourceDefinition, $resource));
 
 		$data = array();

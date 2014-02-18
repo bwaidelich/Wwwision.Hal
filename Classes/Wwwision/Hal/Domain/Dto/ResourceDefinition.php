@@ -227,6 +227,13 @@ class ResourceDefinition {
 	}
 
 	/**
+	 * @return integer
+	 */
+	public function getCacheLifetime() {
+		return isset($this->options['cache']['lifetime']) ? $this->options['cache']['lifetime'] : NULL;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function __toString() {
