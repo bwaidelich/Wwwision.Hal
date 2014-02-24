@@ -134,12 +134,12 @@ class HalView extends AbstractView {
 			/** @var $embeddedResourceDefinition ResourceDefinition */
 			foreach ($resourceDefinition->getEmbeddedResourceDefinitions() as $propertyName => $embeddedResourceDefinition) {
 				if ($embeddedResourceDefinition->isCollection()) {
-					$embeddedResources = ObjectAccess::getProperty($resource, $propertyName);
+					$embeddedResources = ObjectAccess::getPropertyPath($resource, $propertyName);
 					foreach ($embeddedResources as $embeddedResource) {
 						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createCollectionResource($embeddedResourceDefinition, $embeddedResource));
 					}
 				} else {
-					$embeddedResource = ObjectAccess::getProperty($resource, $propertyName);
+					$embeddedResource = ObjectAccess::getPropertyPath($resource, $propertyName);
 					if ($embeddedResource !== NULL) {
 						$halResource->setEmbedded($embeddedResourceDefinition->getLinkName(), $this->createEmbeddedResource($embeddedResourceDefinition, $embeddedResource, $embeddedResourceDefinition->getOptions()), TRUE);
 					}
@@ -199,7 +199,7 @@ class HalView extends AbstractView {
 			if ($propertyDefinition->hasStaticValue()) {
 				$data[$propertyDefinition->getResourceName()] = $propertyDefinition->getStaticValue();
 			} else {
-				$propertyValue = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
+				$propertyValue = ObjectAccess::getPropertyPath($resource, $propertyDefinition->getName());
 				if ($propertyDefinition->hasType()) {
 					$propertyType = $propertyDefinition->getType();
 					// TODO: support more type conversions
