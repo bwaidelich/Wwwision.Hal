@@ -119,10 +119,18 @@ class HalView extends AbstractView {
 		/** @var $propertyDefinition ResourcePropertyDefinition */
 		foreach ($resourceDefinition->getPropertyDefinitions() as $propertyDefinition) {
 			if ($propertyDefinition->hasStaticValue()) {
-				$data[$propertyDefinition->getResourceName()] = $propertyDefinition->getStaticValue();
+				$propertyValue = $propertyDefinition->getStaticValue();
 			} else {
-				$data[$propertyDefinition->getResourceName()] = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
+				$propertyValue = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
 			}
+			if ($propertyDefinition->hasType()) {
+				$propertyType = $propertyDefinition->getType();
+				// TODO: support more type conversions
+				if ($propertyType === 'string') {
+					$propertyValue = (string)$propertyValue;
+				}
+			}
+			$data[$propertyDefinition->getResourceName()] = $propertyValue;
 		}
 		$halResource->setData($data);
 
