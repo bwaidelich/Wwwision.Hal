@@ -3,8 +3,6 @@ TYPO3:
     object:
       excludeClasses:
        'zircote.hal' : ['.*']
-    reflection:
-      ignoredTags: ['api', 'package', 'subpackage', 'license', 'copyright', 'author', 'const', 'see', 'todo', 'scope', 'fixme', 'test', 'expectedException', 'depends', 'dataProvider', 'group', 'codeCoverageIgnore', 'rel', 'covers']
 
 #Wwwision:
 #  Hal:
