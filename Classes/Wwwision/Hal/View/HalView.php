@@ -123,13 +123,7 @@ class HalView extends AbstractView {
 			} else {
 				$propertyValue = ObjectAccess::getProperty($resource, $propertyDefinition->getName());
 			}
-			if ($propertyDefinition->hasType()) {
-				$propertyType = $propertyDefinition->getType();
-				// TODO: support more type conversions
-				if ($propertyType === 'string') {
-					$propertyValue = (string)$propertyValue;
-				}
-			}
+			$propertyValue = $this->convertPropertyValue($propertyValue, $propertyDefinition);
 			$data[$propertyDefinition->getResourceName()] = $propertyValue;
 		}
 		$halResource->setData($data);
@@ -161,7 +155,7 @@ class HalView extends AbstractView {
 				try {
 					$href = $this->buildUriFromRouteValues($linkDefinition->getRouteValues(), $linkDefinition->isAbsolute());
 				} catch (NoMatchingRouteException $exception) {
-					throw new Exception(sprintf('Could not create URI for link definition "%s"', $linkDefinition), 1383496970, $exception);
+					throw new Exception(sprintf('Could not create URI for link definition "%s" (resource "%s")', $linkDefinition, $resourceDefinition), 1383496970, $exception);
 				}
 			} else {
 				$href = $this->getResourceUri($linkDefinition->getResourceDefinition(), NULL);
@@ -208,13 +202,7 @@ class HalView extends AbstractView {
 				$data[$propertyDefinition->getResourceName()] = $propertyDefinition->getStaticValue();
 			} else {
 				$propertyValue = ObjectAccess::getPropertyPath($resource, $propertyDefinition->getName());
-				if ($propertyDefinition->hasType()) {
-					$propertyType = $propertyDefinition->getType();
-					// TODO: support more type conversions
-					if ($propertyType === 'string') {
-						$propertyValue = (string)$propertyValue;
-					}
-				}
+				$propertyValue = $this->convertPropertyValue($propertyValue, $propertyDefinition);
 				$data[$propertyDefinition->getResourceName()] = $propertyValue;
 			}
 		}
@@ -297,6 +285,30 @@ class HalView extends AbstractView {
 		$routeValue = $routeValues[$key];
 		unset($routeValues[$key]);
 		return $routeValue;
+	}
+
+	/**
+	 * Converts the given $propertyValue based upon its "type" attribute
+	 *
+	 * @param mixed $propertyValue
+	 * @param ResourcePropertyDefinition $propertyDefinition
+	 * @return mixed
+	 */
+	protected function convertPropertyValue($propertyValue, ResourcePropertyDefinition $propertyDefinition) {
+		if (!$propertyDefinition->hasType()) {
+			return $propertyValue;
+		}
+		$propertyType = $propertyDefinition->getType();
+
+		// TODO: support more type conversions
+		switch ($propertyType) {
+			case 'string':
+				if (is_object($propertyValue) && !method_exists($propertyValue, '__toString')) {
+					return (string)$this->persistenceManager->getIdentifierByObject($propertyValue);
+				}
+				return (string)$propertyValue;
+		}
+		return $propertyValue;
 	}
 
 }
