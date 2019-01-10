@@ -195,7 +195,7 @@ class ResourceDefinitionFactory {
 				if (!$propertyDefinition->hasType()) {
 					$propertyDefinition->setType($propertyMetadata['type']);
 				}
-				if ($propertyDefinition->getType() === 'DateTime' || TypeHandling::isSimpleType($propertyDefinition->getType())) {
+				if ($propertyDefinition->getType() === 'DateTime' || $propertyDefinition->getType() === 'DateTimeImmutable' || TypeHandling::isSimpleType($propertyDefinition->getType())) {
 					$resourceDefinition->addPropertyDefinition($propertyDefinition);
 				} else {
 					$resourceDefinition->addEmbeddedResourceDefinition($this->createFromResourceName($propertyDefinition->getResourceName()), $propertyDefinition->getName());
